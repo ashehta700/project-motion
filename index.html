@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Ahmed Shehta -->
+    <!-- https://ahmed-shehta.netlify.app/  -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projectile Motion</title>
+    <!-- icon for task -->
+    <link rel="shortcut icon" href="https://cdn.iconscout.com/icon/premium/png-256-thumb/projectile-3840882-3188907.png"
+        type="image/x-icon">
+    <!-- bootstrap cdn links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <!-- font awesome cdn for icons  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<!-- custom style -->
+<style>
+    html,
+    body {
+        background-color: #000000;
+        height: 100%;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    #wrapper {
+        background: #fff;
+        height: 100%;
+        width: 100%;
+        background-image: url('https://i.ibb.co/BfBS0dC/go.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    #configuration {
+        top: 6px;
+        position: absolute;
+        left: 5px;
+    }
+
+    #ball {
+        background-color: #000000;
+        border-radius: 50%;
+        bottom: 10px;
+        height: 35px;
+        left: 5px;
+        position: absolute;
+        width: 35px;
+        z-index: 2;
+    }
+
+    #pathWrapper {
+        z-index: 1;
+    }
+
+    .dot {
+        background-color: #ff0000 !important;
+        border-radius: 50%;
+        height: 10px;
+        position: absolute;
+        width: 10px;
+    }
+
+    #floor {
+        background-color: #ff0000;
+        bottom: 5px;
+        height: 5px;
+        left: 0;
+        position: absolute;
+        width: 100%;
+    }
+
+    #pathWrapper {
+        height: 97%;
+        width: 100%;
+    }
+
+    #posX,
+    #posY {
+        border-bottom: 4px solid;
+        padding-bottom: 20px;
+        color: #6f0202;
+        font-weight: 700;
+        padding-top: 2px;
+        font-size: 18px;
+    }
+
+    #posY {
+        border: none;
+    }
+
+    #speedLabel,
+    #angleLabel {
+        color: #6f0202;
+        font-weight: 700;
+        padding-top: 8px;
+        font-size: 18px;
+    }
+
+    .configBox {
+        height: auto;
+        line-height: 8px;
+        padding: 15px 5px;
+        position: absolute;
+        top: 52px;
+        width: 300px;
+        z-index: 2;
+        left: 10px;
+    }
+
+    .configBox button {
+        float: left;
+        height: 25px;
+        margin-right: 10px;
+        width: 25px;
+        font-size: 25px;
+        font-weight: 900;
+        color: #880202;
+        padding-top: -17px;
+    }
+
+    #speedBox,
+    #angleBox {
+        display: none;
+
+    }
+
+    #angleBox {
+        margin-top: 30px;
+    }
+
+    #infoBox {
+        background-color: rgb(86 80 80 / 20%);
+        border-radius: 10px;
+        height: 16%;
+        padding: 15px;
+        position: absolute;
+        right: 2%;
+        top: 31%;
+        width: 18%;
+        z-index: 2;
+        padding: 20px;
+    }
+</style>
+
+<body>
+
+    <body>
+        <!-- nav in yop with buttons -->
+        <div id="wrapper">
+            <nav id="configuration">
+                <button id="setSpeedBtn" class="btn btn-primary">Set Speed | <i
+                        class="fas fa-tachometer-alt"></i></button>
+                <button id="setAngleBtn" class="btn btn-primary">Set Angle | <i class="fas fa-chart-line"></i></button>
+                <button id="startBtn" class="btn btn-success">Launch | <i class="fas fa-rocket"></i></button>
+                <button id="clearScreenBtn" class="btn btn-danger" onclick="location.reload()">Reset | <i
+                        class="fas fa-power-off"></i></button>
+            </nav>
+            <!-- speed and angle box -->
+            <div class="configBox">
+                <div id="speedBox">
+                    <button id="speedIncrement">+</button>
+                    <button id="speedDecrement">-</button>
+                    <p id="speedLabel">Speed: 0</p>
+                </div>
+
+                <div id="angleBox">
+                    <button id="angleIncrement">+</button>
+                    <button id="angleDecrement">-</button>
+                    <p id="angleLabel">Angle: 0</p>
+                </div>
+            </div>
+            <!-- display x and y postion from screen -->
+            <div id="infoBox">
+                <p id="posX">Position (X) : 0</p>
+                <p id="posY">Position (Y) : 0</p>
+            </div>
+
+
+            <!-- floor-line and ball and path of ball   -->
+            <div id="floor"></div>
+            <div id="ball"></div>
+            <div id="pathWrapper"></div>
+        </div>
+        <script>
+
+
+            // define variables
+            var positionX = 0, positionY = 0, gravity = 10, time = 0, pi = 3.1415, ang = 0, speed = 0, rad = 0, vox = 0, voy = 0, x = 0, y = 0, initialXPosition = 10, initialYPosition = 15;
+            var loop = false, moveLogic;
+
+            var isPathOn = true;
+            var pathColor = "rgb(255,255,255,0)";
+            // add functions on click buttons
+            document.getElementById("startBtn").addEventListener('click', start, false);
+            document.getElementById("setSpeedBtn").addEventListener('click', setSpeed, false);
+            document.getElementById("setAngleBtn").addEventListener('click', setAngle, false);
+            document.getElementById("clearScreenBtn").addEventListener('click', clearScreen, false);
+            document.getElementById("speedIncrement").addEventListener('click', speedIncrement, false);
+            document.getElementById("speedDecrement").addEventListener('click', speedDecrement, false);
+            document.getElementById("angleIncrement").addEventListener('click', angleIncrement, false);
+            document.getElementById("angleDecrement").addEventListener('click', angleDecrement, false);
+
+            // get the Id's
+            function onLoad() {
+                var ball = document.getElementById("ball");
+                var posX = document.getElementById("posX");
+                var posY = document.getElementById("posY");
+                var wrapper = document.getElementById("wrapper");
+                var floor = document.getElementById("floor");
+                var speedLabel = document.getElementById("speedLabel");
+                var angleLabel = document.getElementById("angleLabel");
+                var speedBox = document.getElementById("speedBox");
+                var angleBox = document.getElementById("angleBox");
+                var pathWrapper = document.getElementById("pathWrapper");
+                var rgbView = document.getElementById("rgbView");
+            }
+
+            // function for launch btn
+            function start() {
+                rad = ang * pi / 180;
+                vox = speed * Math.cos(rad);
+                voy = speed * Math.sin(rad);
+                moveLogic = setInterval(mainLoop, 80);
+            }
+            // function for reset button
+            function clearScreen() {
+                location.reload();
+            }
+
+            // set speed and angle buttons function
+            function setSpeed() {
+                speedBox.style.display = "block";
+            }
+            function setAngle() {
+                angleBox.style.display = "block";
+            }
+            function speedIncrement() {
+                speed += 10;
+                speedLabel.innerHTML = "Speed: " + speed;
+            }
+            function speedDecrement() {
+                speed -= 10;
+                speedLabel.innerHTML = "Speed: " + speed;
+            }
+            function angleIncrement() {
+                ang += 10;
+                angleLabel.innerHTML = "Angle: " + ang;
+            }
+            function angleDecrement() {
+                ang -= 10;
+                angleLabel.innerHTML = "Angle: " + ang;
+            }
+
+
+
+
+            // set the function for mainloop
+            function mainLoop() {
+                time += 0.2;
+                x = vox * time;
+                y = voy * time - 0.5 * gravity * (time * time);
+                positionX = x;
+                positionY = initialYPosition + y;
+
+                ball.style.left = positionX + "px";
+                ball.style.bottom = positionY + "px";
+                posX.innerHTML = "Position (X): " + Math.round(positionX);
+                posY.innerHTML = "Position (Y): " + Math.round(positionY);
+
+                if (isPathOn) {
+                    pathWrapper.innerHTML += '<span class="dot" style="left: ' + positionX + 'px; bottom: ' + positionY + 'px; background-color: ' + pathColor + '"></span>';
+                }
+
+                if (positionY <= 10) {
+                    clearInterval(moveLogic);
+                }
+            }
+        </script>
+
+    </body>
+
+</html>
